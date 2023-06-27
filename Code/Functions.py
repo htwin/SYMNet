@@ -9,9 +9,8 @@ import torch.utils.data as Data
 import nibabel as nib
 import torch
 import itertools
-from scipy.ndimage import zoom
-
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def generate_grid(imgshape):
     x = np.arange(imgshape[0])
@@ -238,4 +237,69 @@ class Predict_dataset(Data.Dataset):
                   'fixed_label': fixed_label.float(), 'move_label': moved_label.float(), 'index': index}
         return output
 
+
+if __name__ == '__main__':
+    velocity = [
+        [[1, 2, 3, 4, 5],
+         [6, 7, 8, 9, 10],
+         [11, 12, 13, 14, 15],
+         [16, 17, 18, 19, 20]],
+
+        [[21, 22, 23, 24, 25],
+         [26, 27, 28, 29, 30],
+         [31, 32, 33, 34, 35],
+         [36, 37, 38, 39, 40]],
+
+        [[41, 42, 43, 44, 45],
+         [46, 47, 48, 49, 50],
+         [51, 52, 53, 54, 55],
+         [56, 57, 58, 59, 60]]
+    ]
+
+
+    # velocity = torch.tensor(velocity)
+    # print(velocity.shape)
+    # print(velocity)
+    # velocity = np.reshape(velocity, (1,) + velocity.shape)
+    # print(velocity.shape)
+    # print(velocity)
+    #
+    # velocity = velocity.repeat(2,1,1,1)
+    # print(velocity.shape)
+    # print(velocity)
+    #
+    # velocity = velocity.repeat(1,  1,1, 1, 1)
+    # print(velocity.shape)
+    # print(velocity)
+
+    # 0 1 2 3 4
+    data = torch.randn(1,3,5,6,7)
+    print(data.shape)
+    print(data)
+    data = data.permute(0, 2, 3, 4, 1)
+    # 1 5 6 7 3
+    print(data.shape)
+    print(data)
+
+    # 1 160 144  192 3
+
+    # 1 144 192 3 160
+    print(data.shape)
+    print(data)
+
+
+
+    # flow = velocity / (2**7)
+    # print(flow)
+
+    # grid = torch.from_numpy(np.reshape(grid, (1,) + grid.shape)).cuda().float()
+    # size_tensor = sample_grid.size()
+    # # 0.5 flow
+    # # 1 160 144  192 3
+    # for _ in range(self.time_step):
+    #     grid = sample_grid + (flow.permute(0, 2, 3, 4, 1) * range_flow)
+    #     grid[0, :, :, :, 0] = (grid[0, :, :, :, 0] - ((size_tensor[3] - 1) / 2)) / (size_tensor[3] - 1) * 2
+    #     grid[0, :, :, :, 1] = (grid[0, :, :, :, 1] - ((size_tensor[2] - 1) / 2)) / (size_tensor[2] - 1) * 2
+    #     grid[0, :, :, :, 2] = (grid[0, :, :, :, 2] - ((size_tensor[1] - 1) / 2)) / (size_tensor[1] - 1) * 2
+    #     flow = flow + F.grid_sample(flow, grid, mode='bilinear', align_corners=True)
 

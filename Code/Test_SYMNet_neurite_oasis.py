@@ -33,10 +33,13 @@ if not os.path.isdir(savepath):
 
 
 def test():
+
     model = SYMNet(2, 3, opt.start_channel).cuda()
+
     transform = SpatialTransform().cuda()
 
     diff_transform = DiffeomorphicTransform(time_step=7).cuda()
+
     com_transform = CompositionTransform().cuda()
 
     model.load_state_dict(torch.load(opt.modelpath))
@@ -63,7 +66,10 @@ def test():
     moved_img = torch.from_numpy(moved_img).float().to(device).unsqueeze(dim=0)
 
     with torch.no_grad():
+
         F_xy, F_yx = model(fixed_img, moved_img)
+
+        # save_img(F_xy,savepath+ '/F_xy.nii.gz')
 
         F_X_Y_half = diff_transform(F_xy, grid, range_flow)
         F_Y_X_half = diff_transform(F_yx, grid, range_flow)

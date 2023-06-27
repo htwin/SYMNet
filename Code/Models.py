@@ -148,6 +148,8 @@ class SpatialTransformNearest(nn.Module):
         sample_grid[0,:,:,:,0] = (sample_grid[0,:,:,:,0]-((size_tensor[3]-1)/2))/(size_tensor[3]-1)*2
         sample_grid[0,:,:,:,1] = (sample_grid[0,:,:,:,1]-((size_tensor[2]-1)/2))/(size_tensor[2]-1)*2
         sample_grid[0,:,:,:,2] = (sample_grid[0,:,:,:,2]-((size_tensor[1]-1)/2))/(size_tensor[1]-1)*2
+
+
         flow = torch.nn.functional.grid_sample(x, sample_grid, mode='nearest', align_corners=True)
 
         return flow
@@ -162,6 +164,8 @@ class DiffeomorphicTransform(nn.Module):
         flow = velocity/(2.0**self.time_step)
         size_tensor = sample_grid.size()
         # 0.5 flow
+        # 1 3 160 144  192
+        # 1 160 144 192 3
         for _ in range(self.time_step):
             grid = sample_grid + (flow.permute(0,2,3,4,1) * range_flow)
             grid[0, :, :, :, 0] = (grid[0, :, :, :, 0] - ((size_tensor[3]-1) / 2)) / (size_tensor[3]-1) * 2

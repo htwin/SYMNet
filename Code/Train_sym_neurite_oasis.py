@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from Models import SYMNet, SpatialTransform, SpatialTransformNearest, smoothloss, DiffeomorphicTransform, \
     CompositionTransform, magnitude_loss, neg_Jdet_loss, NCC
-from Functions import generate_grid, Dataset_epoch_crop, Predict_dataset_crop
+from Functions import generate_grid, Dataset_epoch_crop, Predict_dataset_crop,save_img
 import torch.utils.data as Data
 
 import matplotlib.pyplot as plt
@@ -74,10 +74,11 @@ def dice(im1, atlas):
 
 def train():
     model = SYMNet(2, 3, start_channel).cuda()
-    loss_similarity = NCC(win=5)
-    loss_smooth = smoothloss
-    loss_magnitude = magnitude_loss
-    loss_Jdet = neg_Jdet_loss
+
+    loss_similarity = NCC(win=5)  # 归一化互相关损失
+    loss_smooth = smoothloss  # 平滑损失
+    loss_magnitude = magnitude_loss #
+    loss_Jdet = neg_Jdet_loss # 雅各比行列式损失  作者提出了雅各比行列式损失来代替voxelmorph的smooth grad loss。
 
     transform = SpatialTransform().cuda()
     transform_nearest = SpatialTransformNearest().cuda()
@@ -140,6 +141,7 @@ def train():
 
 
             if (step % n_checkpoint == 0):
+
                 modelname = model_dir + '/SYMNet_neurite_oasis_smo30_update_' + str(step) + '.pth'
                 torch.save(model.state_dict(), modelname)
                 np.save(model_dir + '/loss_SYMNet_neurite_oasis_smo30_update_' + str(step) + '.npy', lossall)
